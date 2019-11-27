@@ -14,52 +14,64 @@ import com.repayment.utils.ConverterUtils;
 @Component
 public class LoanRepaymentServiceImpl implements Service{
 	/**
-     * Performs the calculation.
-     *
-     * @param amount         the first payment
-     * @param rateAndPeriods The rate and periods, not null.
-     * @return the resulting amount, never null.
-     */
+	 * Performs the calculation.
+	 */
     public List<MonthlyPaymentDetails> calculate(LoanDetails loanDetails) {
+    	double principal= loanDetails.getLoanAmount();
+    	double annualInterestRate=loanDetails.getNominalRate();
+    	 double monthlyInterestRate, monthlyPayment;
+    	 
+    	 Integer duration = loanDetails.getDuration();
+    	 
+    	 monthlyInterestRate = annualInterestRate / 12;
+         monthlyPayment      = monthlyPayment(principal, monthlyInterestRate, duration);
+         
     	
-    	Integer duration = loanDetails.getDuration();
     	List<MonthlyPaymentDetails> repaymentDetails = new ArrayList<MonthlyPaymentDetails>(duration);
     	Date date = ConverterUtils.stringToDateConverter(loanDetails.getStartDate());
-    	String interest = null;
+    	
+    	   double interestPaid, principalPaid, newBalance;
     	for(int i=0;i<(duration);i++) {
+    		
+    		 interestPaid  = principal      * (monthlyInterestRate / 100);
+             principalPaid = monthlyPayment - interestPaid;
+             newBalance    = principal      - principalPaid;
+    		
     		MonthlyPaymentDetails monthlyPaymentDetails = new MonthlyPaymentDetails();
     		
     		date = getNextMonthDate(date,i);
     		monthlyPaymentDetails.setDate(ConverterUtils.datetoStringConverter(date));
     		//calculate interest
-    		interest = calculateInterest(loanDetails);
-    		String interestFormated = interest.substring(0, 2)+"."+ interest.substring(2, 4);
-    		monthlyPaymentDetails.setInterest(interestFormated);
+    		//interest = calculateInterest(loanDetails);
+    		//String interestFormated = interest.substring(0, 2)+"."+ interest.substring(2, 4);
+    		monthlyPaymentDetails.setInterest(""+interestPaid);
     		
     		//calculate principal
-    		Double principal =calculatePrincipal(loanDetails,interest);
-    		monthlyPaymentDetails.setPrincipal(""+198.53f);
+    		monthlyPaymentDetails.setPrincipal(""+principalPaid);
     		
     		monthlyPaymentDetails.setInitialOutstandingPrincipal(""+loanDetails.getLoanAmount());
     		monthlyPaymentDetails.setBorrowerPaymentAmount(""+219.36f);
     		
-    		monthlyPaymentDetails.setRemainingOutstandingPrincipal("");
+    		monthlyPaymentDetails.setRemainingOutstandingPrincipal(""+newBalance);
     		 repaymentDetails.add(monthlyPaymentDetails);
+    		 
+    		 principal = newBalance;
     	}
-    	
+
        return repaymentDetails;
     }
 
-    private Double calculatePrincipal(LoanDetails loanDetails, String interest) {
-    	//loanDetails.getLoanAmount()
-		return null;
-	}
-
-	private String calculateInterest(LoanDetails loanDetails) {
-    	Float interes = (loanDetails.getNominalRate()*30*loanDetails.getLoanAmount());
-    	Double interest = (double)interes/360;
-		return ""+interest;
-	}
+    /**
+     * @param loanAmount
+     * @param monthlyInterestRate in percent
+     * @param numberOfMonths
+     * @return the amount of the monthly payment of the loan
+     */
+    static double monthlyPayment(double loanAmount, double monthlyInterestRate, int numberOfMonths) {
+        monthlyInterestRate /= 100;  
+        return loanAmount * monthlyInterestRate /
+                ( 1 - 1 / Math.pow(1 + monthlyInterestRate, numberOfMonths) );
+    }
 
 	/**
      * Get the next month date
