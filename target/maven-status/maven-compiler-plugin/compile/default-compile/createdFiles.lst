@@ -1,1 +1,8 @@
+com\repayment\config\SwaggerConfig.class
+com\repayment\service\LoanRepaymentServiceImpl.class
+com\repayment\service\Service.class
+com\repayment\model\MonthlyPaymentDetails.class
+com\repayment\utils\ConverterUtils.class
+com\repayment\controller\LoanRepaymentController.class
+com\repayment\request\LoanDetails.class
 com\repayment\plan\PlanGeneratorApplication.class
