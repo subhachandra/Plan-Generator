@@ -40,24 +40,31 @@ public class LoanRepaymentServiceImpl implements Service{
              principalPaid = monthlyPayment-interestPaid;
              newBalance    = principal-principalPaid;
     		
-    		MonthlyPaymentDetails monthlyPaymentDetails = new MonthlyPaymentDetails();
-    		
     		date = getNextMonthDate(date,i);
-    		monthlyPaymentDetails.setDate(ConverterUtils.datetoStringConverter(date));
-    		monthlyPaymentDetails.setInterest(""+interestPaid);
-    		monthlyPaymentDetails.setPrincipal(""+principalPaid);
-    		monthlyPaymentDetails.setInitialOutstandingPrincipal(""+principal);
-    		monthlyPaymentDetails.setBorrowerPaymentAmount(""+219.36f);
-    		monthlyPaymentDetails.setRemainingOutstandingPrincipal(""+newBalance);
+    		MonthlyPaymentDetails monthlyPaymentDetails = addRepaymentDetails(date,interestPaid,principalPaid,principal,newBalance);
     		repaymentDetails.add(monthlyPaymentDetails);
-    		 
-    		 principal = newBalance;
+    		principal = newBalance;
     	}
+    	//for last month
 
        return repaymentDetails;
     }
 
-    /**
+    private MonthlyPaymentDetails addRepaymentDetails(Date date, double interestPaid, double principalPaid, double principal,
+			double newBalance) {
+    	MonthlyPaymentDetails monthlyPaymentDetails = new MonthlyPaymentDetails();
+    	
+    	monthlyPaymentDetails.setDate(ConverterUtils.datetoStringConverter(date));
+		monthlyPaymentDetails.setInterest(""+interestPaid);
+		monthlyPaymentDetails.setPrincipal(""+principalPaid);
+		monthlyPaymentDetails.setInitialOutstandingPrincipal(""+principal);
+		monthlyPaymentDetails.setBorrowerPaymentAmount(""+219.36f);
+		monthlyPaymentDetails.setRemainingOutstandingPrincipal(""+newBalance);
+		
+		return monthlyPaymentDetails;
+	}
+
+	/**
      * @param loanAmount
      * @param monthlyInterestRate in percent
      * @param numberOfMonths
