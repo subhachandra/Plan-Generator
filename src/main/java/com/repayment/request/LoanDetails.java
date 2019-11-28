@@ -3,7 +3,7 @@ package com.repayment.request;
 public class LoanDetails {
 
 	private Long loanAmount;
-	private float nominalRate;
+	private Float nominalRate;
 	private Integer duration;
 	private String startDate;
 
@@ -15,11 +15,11 @@ public class LoanDetails {
 		this.loanAmount = loanAmount;
 	}
 
-	public float getNominalRate() {
+	public Float getNominalRate() {
 		return nominalRate;
 	}
 
-	public void setNominalRate(float nominalRate) {
+	public void setNominalRate(Float nominalRate) {
 		this.nominalRate = nominalRate;
 	}
 

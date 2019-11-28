@@ -16,7 +16,7 @@ public class LoanRepaymentServiceImpl implements Service{
 	
 	
     /**
-     *
+     * it will calculate the loan repayments plan
      */
     public List<MonthlyPaymentDetails> calculate(LoanDetails loanDetails) {
     	
@@ -34,7 +34,7 @@ public class LoanRepaymentServiceImpl implements Service{
     	
     	double interestPaid, principalPaid, newBalance;
     	
-    	for(int i=0;i<months;i++) {
+    	for(int i=0;i<(months-1);i++) {
     		
     		 interestPaid  = principal*(monthlyInterestRate/100);
              principalPaid = monthlyPayment-interestPaid;
@@ -46,6 +46,11 @@ public class LoanRepaymentServiceImpl implements Service{
     		principal = newBalance;
     	}
     	//for last month
+    	date = getNextMonthDate(date,-1);
+    	 interestPaid  = principal*(monthlyInterestRate/100);
+    	principalPaid = monthlyPayment-interestPaid;
+    	newBalance=0;
+		repaymentDetails.add(addRepaymentDetails(date,interestPaid,principalPaid,principal,newBalance));
 
        return repaymentDetails;
     }
@@ -77,7 +82,7 @@ public class LoanRepaymentServiceImpl implements Service{
     }
 
 	/**
-     * Get the next month date
+     * It is used to get the next month date
      * @param date
      * @param i
      * @return
